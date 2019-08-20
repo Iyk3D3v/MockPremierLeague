@@ -8,17 +8,18 @@ const {createValidation, loginValidation} = require('../validation');
 
 //to create Admin
 
-router.post('/create', (req, res) =>{
+router.post('/create', async (req, res) =>{
     //validate request body
     const {error}  = createValidation(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
     //check if email exists
-    const emailExists = Admin.findOne({email:req.body.email});
+    const emailExists = Admin.findOne({"email":req.body.email});
 
     if(emailExists) return res.status(400).send("Email Exists");
 
     //to hash password
+    
     const salt = await bcrypt.genSalt(10);
     const passwordhash = await bcrypt.hash(req.body.password, salt); 
 
